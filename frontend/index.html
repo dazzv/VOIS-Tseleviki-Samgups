@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My app</title>
+    <link href="main.css" rel="stylesheet" />
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <div class="title">
+                <h1>ВОИС<p>Веб-ориентированная информационная система <br>для студентов-целевиков СамГУПС</p></h1>
+                <h2 @click="authPanel = true">Войти</h2>
+            </div>
+        </div>
+        <div class="main container" v-if="active == 'main'">
+            <div class="component">
+                <h1 @click="activeComponent = 'news'" class="component_title" :class="{active: activeComponent == 'news'}">Лента событий и новостей</h1>
+                <h1  @click="activeComponent = 'carera'" class="component_title" :class="{active: activeComponent == 'carera'}">Карьера</h1>
+                <h1 v-if="status=='admin'"  @click="activeComponent = 'adminPanel'" class="component_title" :class="{active: activeComponent == 'adminPanel'}">Администратор</h1>
+            </div>
+            <div class="content" v-if="activeComponent == 'news'">
+                <div class="item" 
+                v-for="item in news"
+                @key="item.id"
+                >
+                    <h1>{{item.title}}</h1>
+                    <img :src="`${item.icon}`" alt="logo">
+                    <p>{{item.text}}</p>
+                    <p>Организатор: {{item.organization}}</p>
+                    
+                </div>
+            </div>
+            <div class="content" v-if="activeComponent == 'carera'">
+                <div class="item" 
+                v-for="item in articles"
+                @key="item.id"
+                >
+                    <h1>{{item.title}}</h1>
+                    <p>Автор: {{item.author}}</p>
+                    <p>{{item.date_published}}</p>
+                    <p> {{item.text}} </p>
+                </div>
+            </div>
+
+            <div class="auth" v-if="authPanel == true">
+                <h1>Авторизация</h1>
+                <h2>Введите почту</h2>
+                <input type="email" required placeholder="user@mail.ru" v-model="Form.email">
+                <h2>Введите пароль</h2>
+                <input type="password" v-model="Form.password">
+                <div class="btns">
+                    <input class="btn btn2" type="reset" value="Отмена" @click="authPanel = false">
+                    <input class="btn" value="Войти" @click="sendAuthData()">
+                </div>
+            </div>
+            
+            <div class="content admin" v-if="status=='admin' && activeComponent == 'adminPanel'">
+                <h1>Добавление новых данных</h1>
+                <h2>Выберите тип добавляемых данных:</h2>
+                <div class="choose">
+                    <input type="radio" id="contactChoice1" value="news" checked v-model="data.type"/>
+                    <label for="contactChoice1">Новости и события</label>
+                    <input type="radio" id="contactChoice2" value="articles" v-model="data.type"/>
+                    <label for="contactChoice2">Статьи по карьере</label>
+                </div>
+                <div class="new" v-if="data.type == 'news'">
+                    <h2>Введите заголовок</h2>
+                    <input type="text" required placeholder="Заголовок" v-model="data.title">
+                    <h2>Введите текст</h2>
+                    <textarea cols="50" rows="10" v-model="data.text"></textarea>
+                    <h2>Организатор</h2>
+                    <input type="text" v-model="data.organization">
+                    <h2>Укажите ссылку на изображение</h2>
+                    <input type="text" v-model="data.icon">
+                </div>
+                <div class="new" v-if="data.type == 'articles'">
+                    <h2>Введите заголовок</h2>
+                    <input type="text" required placeholder="Заголовок" v-model="data.title">
+                    <h2>Автор</h2>
+                    <input type="text" required v-model="data.author">
+                    <h2>Введите текст</h2>
+                    <textarea cols="50" rows="10" v-model="data.text"></textarea>
+                    <h2>Введите дату публикации</h2>
+                    <input type="text" v-model="data.date" placeholder="Например: 02.06.2023">
+                </div>
+                
+                <input type="button" class="btn"value="Добавить" @click="sendNewData()">
+            </div>
+
+        </div>
+</body>
+<script type="text/javascript" src = "app.js"></script>
+</html>
