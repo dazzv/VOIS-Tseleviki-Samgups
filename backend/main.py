@@ -83,7 +83,6 @@ def handle_data():
       # return jsonify({'message': f'Вход выполнен для пользователя: {email}'})
       return jsonify({
         'username': row[1],
-        'password': row[2],
         'email':row[3]
         })
     # else:
